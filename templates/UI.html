@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title data-key="pageTitle">MalScan - Network Security Scanner</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='LOGO.png') }}" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Sans+Gurmukhi:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: #1a1e2c;
+      --card-bg: #2a2f42;
+      --card-light: #353b52;
+      --border-dark: #0f121c;
+      --border-light: #4a5068;
+      --primary: #5b6cff;
+      --primary-dark: #3e4dd4;
+      --primary-light: #7f8cff;
+      --success: #3db87a;
+      --warning: #e6a817;
+      --danger: #e5484d;
+      --text: #eef0f6;
+      --text-muted: #9da5b8;
+      --leather: #2c1e16;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", "Noto Nastaliq Urdu", "Noto Sans Gurmukhi", sans-serif;
+      background: #141824;
+      background-image: 
+        radial-gradient(circle at 20% 30%, #1e2436 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, #1c2133 0%, transparent 45%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 4px);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    /* ========== SKEUOMORPHIC NAVBAR ========== */
+    .navbar-custom {
+      background: linear-gradient(180deg, #2e344a 0%, #23283a 100%);
+      border-bottom: 2px solid #0b0e16;
+      border-top: 1px solid #4e5470;
+      padding: 12px 0;
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .navbar-custom .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: #dfe3f0;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-custom .navbar-brand i {
+      color: #8a9bff;
+      font-size: 1.6rem;
+      text-shadow: 0 0 12px rgba(138,155,255,0.5), 2px 2px 0 rgba(0,0,0,0.5);
+    }
+
+    .navbar-custom .nav-link {
+      color: #b8c0d8;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+    }
+
+    .navbar-custom .nav-link:hover {
+      color: white;
+      background: rgba(255,255,255,0.06);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .navbar-custom .nav-link i { font-size: 1.1rem; }
+
+    .navbar-custom .dropdown-menu {
+      background: linear-gradient(180deg, #2c3248, #23283a);
+      border: 2px solid #0b0e16;
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 160px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .navbar-custom .dropdown-item {
+      color: #dfe3f0;
+      border-radius: 6px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .navbar-custom .dropdown-item:hover {
+      background: rgba(91,108,255,0.3);
+      color: white;
+    }
+
+    .flag-icon {
+      width: 24px;
+      height: 18px;
+      border-radius: 3px;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,0.4);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .navbar-toggler {
+      border: 2px solid #4a5068;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #3a4058, #2a2f42);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .navbar-toggler:focus { box-shadow: none; }
+    .navbar-toggler i { font-size: 1.6rem; color: var(--text); }
+
+    /* ========== SKEUOMORPHIC CARD ========== */
+    .simple-card {
+      background: linear-gradient(180deg, #2f3548 0%, #252a3a 100%);
+      border: 2px solid #0f121c;
+      border-top-color: #4a5068;
+      border-radius: 14px;
+      transition: all 0.25s ease;
+      box-shadow: 
+        0 12px 28px rgba(0,0,0,0.65),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        inset 0 -1px 0 rgba(0,0,0,0.4);
+    }
+
+    .simple-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 18px 36px rgba(0,0,0,0.8),
+        0 0 0 1px rgba(91,108,255,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        inset 0 -1px 0 rgba(0,0,0,0.5);
+      border-color: #1a1f30;
+      border-top-color: #5b6cff;
+    }
+
+    /* HEADER */
+    h1 {
+      color: #eef0f6;
+      text-shadow: 
+        0 2px 0 #0a0c12,
+        0 4px 8px rgba(0,0,0,0.6),
+        0 0 30px rgba(91,108,255,0.15);
+      letter-spacing: -0.02em;
+    }
+
+    h1 .text-primary {
+      color: #8a9bff !important;
+      text-shadow: 0 0 20px rgba(138,155,255,0.5), 2px 2px 0 rgba(0,0,0,0.6);
+    }
+
+    /* NAV TABS — raised button look */
+    .nav-tabs {
+      border: none;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.5rem;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .nav-tabs .nav-link {
+      border: 2px solid #0f121c;
+      border-top-color: #4a5068;
+      color: #b8c0d8;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: 0.15s;
+      white-space: nowrap;
+      font-size: 0.9rem;
+      background: linear-gradient(180deg, #353b52 0%, #2a2f42 100%);
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .nav-tabs .nav-link i { margin-right: 6px; }
+
+    .nav-tabs .nav-link:hover {
+      background: linear-gradient(180deg, #3f4660 0%, #31374d 100%);
+      color: white;
+      border-top-color: #5b6cff;
+    }
+
+    .nav-tabs .nav-link.active {
+      background: linear-gradient(180deg, #5b6cff 0%, #3e4dd4 100%);
+      color: white;
+      border-color: #0f121c;
+      border-top-color: #8a9bff;
+      box-shadow: 
+        0 6px 14px rgba(91,108,255,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.25),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      background: linear-gradient(180deg, #6b7aff 0%, #4a5ae8 100%);
+      border: 2px solid #0f121c;
+      border-top-color: #9aa8ff;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: 0.15s;
+      box-shadow: 
+        0 6px 14px rgba(91,108,255,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 10px 22px rgba(91,108,255,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+      background: linear-gradient(180deg, #7f8cff 0%, #5b6cff 100%);
+      border-top-color: #b8c0ff;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 
+        0 3px 6px rgba(91,108,255,0.4),
+        inset 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .btn-outline-light {
+      border: 2px solid #0f121c;
+      border-top-color: #5a6280;
+      color: #dfe3f0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      transition: 0.15s;
+      background: linear-gradient(180deg, #353b52 0%, #2a2f42 100%);
+      box-shadow: 
+        0 4px 10px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .btn-outline-light:hover {
+      background: linear-gradient(180deg, #404760 0%, #333a50 100%);
+      border-top-color: #7f8cff;
+      color: white;
+      box-shadow: 
+        0 6px 14px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    /* PROGRESS */
+    .progress {
+      background: #1a1f2e;
+      border-radius: 20px;
+      height: 10px;
+      overflow: hidden;
+      border: 2px solid #0f121c;
+      box-shadow: 
+        inset 0 2px 4px rgba(0,0,0,0.7),
+        0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .progress-bar {
+      background: linear-gradient(180deg, #7f8cff 0%, #4a5ae8 100%);
+      border-radius: 20px;
+      transition: width 0.3s ease;
+      box-shadow: 
+        0 0 12px rgba(91,108,255,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    /* STATS CARDS */
+    .stats-card {
+      padding: 18px 12px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #353b52 0%, #2a2f42 100%);
+      border: 2px solid #0f121c;
+      border-top-color: #4a5068;
+      transition: 0.2s;
+      text-align: center;
+      box-shadow: 
+        0 4px 10px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .stats-card:hover {
+      background: linear-gradient(180deg, #3d435c 0%, #2f3548 100%);
+      transform: translateY(-2px);
+      border-top-color: #5b6cff;
+      box-shadow: 
+        0 8px 18px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 0 20px rgba(91,108,255,0.2);
+    }
+
+    /* DEVICE CARDS */
+    .device-card {
+      border-radius: 12px;
+      padding: 18px 14px;
+      background: linear-gradient(180deg, #2f3548 0%, #252a3a 100%);
+      border: 2px solid #0f121c;
+      border-top-color: #4a5068;
+      transition: 0.2s;
+      height: 100%;
+      box-shadow: 
+        0 6px 14px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .device-card:hover {
+      transform: scale(1.02);
+      border-top-color: #5b6cff;
+      box-shadow: 
+        0 10px 24px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(91,108,255,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, #353b52 0%, #2a2f42 100%);
+    }
+
+    .device-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #eef0f6;
+      margin-bottom: 2px;
+      word-break: break-word;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .device-ip {
+      font-size: 0.8rem;
+      color: #9da5b8;
+    }
+
+    .device-mac {
+      font-size: 0.7rem;
+      color: #6b7280;
+      font-family: monospace;
+    }
+
+    /* FLOW ITEMS */
+    .flow-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 4px solid #5b6cff;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .protocol-badge {
+      background: rgba(91,108,255,0.25);
+      color: #b8c0ff;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      border: 1px solid rgba(91,108,255,0.3);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* RISK BADGES */
+    .risk-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      border: 2px solid #0f121c;
+      box-shadow: 
+        0 3px 6px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .risk-critical { background: linear-gradient(180deg, #e5484d, #c41e23); color: white; }
+    .risk-high { background: linear-gradient(180deg, #ea580c, #c2410c); color: white; }
+    .risk-medium { background: linear-gradient(180deg, #e6a817, #b8860b); color: #1a1e2c; text-shadow: none; }
+    .risk-low { background: linear-gradient(180deg, #10b981, #059669); color: white; }
+    .risk-safe { background: linear-gradient(180deg, #3db87a, #2d8f5c); color: white; }
+
+    /* FOOTER */
+    footer {
+      border-top: 2px solid #0f121c;
+      color: var(--text-muted);
+      padding-top: 1.5rem;
+      margin-top: 2.5rem;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    /* RTL support */
+    .rtl { direction: rtl; }
+    .rtl .nav-tabs .nav-link i { margin-right: 0; margin-left: 6px; }
+    .rtl .me-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+    .rtl .ms-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+
+    /* mobile fine-tune */
+    @media (max-width: 576px) {
+      .stats-number { font-size: 1.6rem; }
+      .nav-tabs .nav-link { font-size: 0.8rem; padding: 8px 12px; }
+      .btn-primary, .btn-outline-light { padding: 10px 16px; font-size: 0.9rem; }
+      .simple-card { padding: 1.25rem !important; }
+      .device-card { padding: 14px 12px; }
+      .navbar-custom .navbar-brand { font-size: 1.2rem; }
+      .navbar-custom .navbar-brand i { font-size: 1.3rem; }
+    }
+
+    @media (max-width: 400px) {
+      .stats-number { font-size: 1.3rem; }
+      .nav-tabs .nav-link { font-size: 0.7rem; padding: 6px 10px; }
+      .container { padding-left: 8px; padding-right: 8px; }
+    }
+
+    .text-gray { color: #9da5b8; }
+    .text-white { color: #eef0f6; }
+    .bg-primary { background: #5b6cff !important; }
+    .bg-danger { background: #e5484d !important; }
+    .border-gray { border-color: rgba(255,255,255,0.06) !important; }
+    .badge { font-weight: 500; }
+
+    /* About modal — skeuomorphic panel */
+    .about-modal .modal-content {
+      background: linear-gradient(180deg, #2f3548 0%, #252a3a 100%);
+      border: 3px solid #0f121c;
+      border-top-color: #4a5068;
+      border-radius: 16px;
+      color: #eef0f6;
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.9),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .about-modal .modal-header {
+      border-bottom: 2px solid #0f121c;
+      padding: 1.2rem 1.8rem;
+      background: rgba(0,0,0,0.15);
+    }
+    .about-modal .modal-body {
+      padding: 1.8rem;
+    }
+    .about-modal .modal-footer {
+      border-top: 2px solid #0f121c;
+      padding: 1rem 1.8rem;
+      background: rgba(0,0,0,0.15);
+    }
+    .about-modal .btn-close-white {
+      filter: invert(1) brightness(2);
+      opacity: 0.7;
+    }
+    .about-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #7f8cff 0%, #4a5ae8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      color: white;
+      margin: 0 auto 12px;
+      border: 3px solid #0f121c;
+      border-top-color: #9aa8ff;
+      box-shadow: 
+        0 8px 20px rgba(91,108,255,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.3);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .about-role {
+      font-size: 0.8rem;
+      color: #8a9bff;
+      letter-spacing: 0.03em;
+      font-weight: 500;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    /* form select skeuomorphic */
+    .form-select {
+      background: linear-gradient(180deg, #353b52 0%, #2a2f42 100%) !important;
+      border: 2px solid #0f121c !important;
+      border-top-color: #4a5068 !important;
+      color: #eef0f6 !important;
+      border-radius: 10px !important;
+      padding: 10px 18px !important;
+      box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 4px 8px rgba(0,0,0,0.4) !important;
+      transition: 0.2s;
+    }
+
+    .form-select:focus {
+      border-top-color: #5b6cff !important;
+      box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 0 3px rgba(91,108,255,0.3) !important;
+      outline: none;
+    }
+
+    .form-select option {
+      background: #2a2f42;
+      color: #eef0f6;
+    }
+
+    /* toast skeuomorphic */
+    .toast {
+      border: 2px solid #0f121c !important;
+      border-top-color: #4a5068 !important;
+      border-radius: 10px !important;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar navbar-expand-md navbar-custom">
+    <div class="container">
+      <a class="navbar-brand text-white" href="#">
+        <i class="fas fa-shield-halved"></i>
+        <span data-key="appName">MalScan</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center gap-1 gap-md-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="openAboutModal(); return false;">
+              <i class="fas fa-circle-info"></i>
+              <span class="d-none d-sm-inline" data-key="navAbout">About</span>
+            </a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarLangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-language"></i>
+              <span class="d-none d-sm-inline" id="navbarCurrentLang">English</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarLangDropdown">
+              <li>
+                <a class="dropdown-item" href="#" onclick="changeLanguage('en')">
+                  <img src="https://flagcdn.com/w40/gb.png" class="flag-icon" alt="English" /> English
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item urdu-text" href="#" onclick="changeLanguage('ur')">
+                  <img src="https://flagcdn.com/w40/pk.png" class="flag-icon" alt="Urdu" /> اردو
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item pashto-text" href="#" onclick="changeLanguage('ps')">
+                  <img src="https://flagcdn.com/w40/af.png" class="flag-icon" alt="Pashto" /> پښتو
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div class="container py-3 py-md-4">
+
+    <!-- Header -->
+    <div class="row mb-4 mb-md-5">
+      <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold mb-2">
+          <i class="fas fa-shield-alt text-primary me-2"></i>
+          <span data-key="appName">MalScan</span>
+        </h1>
+        <p class="text-gray" data-key="appSubtitle">
+          Advanced Network Security Scanner for IoT Ecosystems
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <div class="simple-card p-3 p-md-4">
+          <!-- Navigation Tabs -->
+          <ul class="nav nav-tabs mb-3 mb-md-4" id="scannerTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="scan-tab" data-bs-toggle="tab" data-bs-target="#scan" type="button" role="tab">
+                <i class="fas fa-radar-dish me-1"></i>
+                <span data-key="navScan">Network Scan</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab">
+                <i class="fas fa-chart-bar me-1"></i>
+                <span data-key="navResults">Scan Results</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="demo-tab" data-bs-toggle="tab" data-bs-target="#demo" type="button" role="tab">
+                <i class="fas fa-play-circle me-1"></i>
+                <span data-key="navDemo">Demo Mode</span>
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content" id="scannerTabsContent">
+            <!-- Scan Tab -->
+            <div class="tab-pane fade show active" id="scan" role="tabpanel">
+              <div class="row g-3 g-md-4">
+                <div class="col-md-6">
+                  <h4 class="mb-3" data-key="scanTitle">Network Security Scan</h4>
+                  <p class="mb-4 text-gray" data-key="scanDescription">
+                    Perform a comprehensive security assessment of your IoT network. Discover devices, analyze traffic patterns, and identify potential vulnerabilities.
+                  </p>
+                  <div class="mb-4">
+                    <label class="form-label" data-key="scanConfig">Scan Configuration</label>
+                    <select class="form-select" id="scanType">
+                      <option value="quick" data-key="scanQuick">Quick Scan (Recommended)</option>
+                      <option value="deep" data-key="scanDeep">Deep Security Analysis</option>
+                      <option value="custom" data-key="scanCustom">Custom Range</option>
+                    </select>
+                  </div>
+                  <div class="d-grid gap-3">
+                    <button class="btn btn-primary" onclick="startRealScan()">
+                      <i class="fas fa-shield-halved me-2"></i>
+                      <span data-key="btnStartScan">Start Security Scan</span>
+                    </button>
+                    <button class="btn btn-outline-light" onclick="getNetworkInfo()">
+                      <i class="fas fa-info-circle me-2"></i>
+                      <span data-key="btnNetworkInfo">Network Information</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="simple-card p-3 p-md-4 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-3">
+                      <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3" style="border: 2px solid #0f121c; border-top-color: #4a5068; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);">
+                        <i class="fas fa-network-wired text-text fa-lg"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-0" data-key="realTimeMonitoring">Real-time Monitoring</h5>
+                        <small class="text-gray" data-key="monitoringDescription">Live packet capture and analysis</small>
+                      </div>
+                    </div>
+                    <div class="mt-4">
+                      <div class="d-flex justify-content-between mb-2">
+                        <span data-key="scanProgress">Scan Progress</span>
+                        <span id="progressText">0%</span>
+                      </div>
+                      <div class="progress">
+                        <div id="scanProgress" class="progress-bar" style="width: 0%"></div>
+                      </div>
+                    </div>
+                    <div id="scanDetails" class="mt-4" style="display: none">
+                      <div class="row g-2 text-center">
+                        <div class="col-4">
+                          <div class="stats-card p-2">
+                            <div class="h4 mb-1" id="devicesCount">0</div>
+                            <small class="text-gray" data-key="devicesFound">Devices</small>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="stats-card p-2">
+                            <div class="h4 mb-1" id="packetsCount">0</div>
+                            <small class="text-gray" data-key="packetsAnalyzed">Packets</small>
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="stats-card p-2">
+                            <div class="h4 mb-1" id="threatsCount">0</div>
+                            <small class="text-gray" data-key="threatsDetected">Threats</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-pane fade" id="results" role="tabpanel">
+              <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 mb-md-4 gap-2">
+                <h4 class="mb-0" data-key="resultsTitle">Scan Results</h4>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-outline-light btn-sm" onclick="exportPDF()">
+                    <i class="fas fa-file-pdf me-1"></i>
+                    <span data-key="btnPDF">PDF Report</span>
+                  </button>
+                  <button class="btn btn-outline-light btn-sm" onclick="refreshResults()">
+                    <i class="fas fa-sync-alt me-1"></i>
+                    <span data-key="btnRefresh">Refresh</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Stats -->
+              <div class="row g-2 g-md-3 mb-4">
+                <div class="col-6 col-md-3">
+                  <div class="simple-card stats-card">
+                    <div class="stats-number text-primary" id="totalDevices">0</div>
+                    <small data-key="statTotalDevices">Total Devices</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="simple-card stats-card">
+                    <div class="stats-number text-warning" id="riskDevices">0</div>
+                    <small data-key="statAtRisk">At Risk</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="simple-card stats-card">
+                    <div class="stats-number text-danger" id="criticalDevices">0</div>
+                    <small data-key="statCritical">Critical</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="simple-card stats-card">
+                    <div class="stats-number text-success" id="safeDevices">0</div>
+                    <small data-key="statSecure">Secure</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Devices Grid -->
+              <div id="devicesGrid" class="row g-3"></div>
+            </div>
+
+            <!-- Demo Tab -->
+            <div class="tab-pane fade" id="demo" role="tabpanel">
+              <div class="row g-3 g-md-4">
+                <div class="col-md-6">
+                  <h4 class="mb-3" data-key="demoTitle">Demo Mode</h4>
+                  <p class="mb-4 text-gray" data-key="demoDescription">
+                    Experience the scanner with simulated data. Perfect for testing and demonstration purposes without accessing real network data.
+                  </p>
+                  <button class="btn btn-primary" onclick="startDemoScan()">
+                    <i class="fas fa-play me-2"></i>
+                    <span data-key="btnDemoScan">Run Demo Scan</span>
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <div class="simple-card p-3 p-md-4 mt-3 mt-md-0">
+                    <h5 class="mb-3">
+                      <i class="fas fa-vial me-2 text-warning"></i>
+                      <span data-key="demoFeatures">Demo Features</span>
+                    </h5>
+                    <ul class="list-unstyled">
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i><span data-key="demoFeature1">Simulated IoT devices</span></li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i><span data-key="demoFeature2">Realistic risk assessments</span></li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i><span data-key="demoFeature3">Sample network traffic</span></li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i><span data-key="demoFeature4">Exportable reports</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-4 pt-3">
+      <p class="text-gray small">
+        &copy; <span id="currentYear"></span>
+        <span data-key="appName">MalScan</span> |
+        <span data-key="footerTagline">Advanced IoT Security Platform</span>
+        <span class="mx-2">•</span>
+        <span id="networkStatus" class="badge bg-primary" data-key="statusReady">Ready</span>
+      </p>
+    </footer>
+  </div>
+
+  <!-- ========== ABOUT MODAL ========== -->
+  <div class="modal fade about-modal" id="aboutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-shield-halved text-primary me-2"></i>
+            <span data-key="appName">MalScan</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="about-avatar">
+            <i class="fas fa-user-astronaut"></i>
+          </div>
+          <h5 class="fw-bold">Faizan Sultan</h5>
+          <div class="about-role">Founder &amp; Developer</div>
+          <hr class="bg-secondary opacity-25 my-3" />
+          <div class="text-start small">
+            <p><i class="fas fa-user-tie text-primary me-2" style="width:20px;"></i> <strong>Founder:</strong> Faizan Sultan</p>
+            <p><i class="fas fa-code text-primary me-2" style="width:20px;"></i> <strong>Developer:</strong> Faizan Sultan</p>
+            <p><i class="fas fa-user-graduate text-primary me-2" style="width:20px;"></i> <strong>Research Assistant:</strong> Sadia Imran</p>
+            <p class="mt-3 text-gray"><i class="fas fa-flask me-2"></i> Advanced IoT Security &amp; ML-driven threat detection.</p>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button class="btn btn-primary btn-sm" data-bs-dismiss="modal">
+            <i class="fas fa-xmark me-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS + Chart.js + jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // ========== TRANSLATION SYSTEM ==========
+    let currentLang = "en";
+    let translations = {};
+    let currentScanData = null;
+
+    const languageNames = { en: "English", ur: "اردو", ps: "پښتو" };
+    const rtlLanguages = ["ur", "ps", "ar"];
+
+    document.addEventListener("DOMContentLoaded", async function () {
+      document.getElementById("currentYear").textContent = new Date().getFullYear();
+      const savedLang = localStorage.getItem("malScanLanguage") || "en";
+      await changeLanguage(savedLang);
+      updateNetworkStatus();
+    });
+
+    async function changeLanguage(langCode) {
+      try {
+        document.getElementById("navbarCurrentLang").textContent = "Loading...";
+        const response = await fetch(`/translations/${langCode}`);
+        translations = await response.json();
+        currentLang = langCode;
+        localStorage.setItem("malScanLanguage", langCode);
+        translatePage();
+        updateTextDirection(langCode);
+        document.getElementById("navbarCurrentLang").textContent = languageNames[langCode];
+        showToast(`Language changed to ${languageNames[langCode]}`, "success");
+      } catch (error) {
+        console.error("Failed to load translations:", error);
+        translations = getFallbackTranslations(langCode) || getFallbackTranslations("en");
+        currentLang = langCode;
+        localStorage.setItem("malScanLanguage", langCode);
+        translatePage();
+        updateTextDirection(langCode);
+        document.getElementById("navbarCurrentLang").textContent = languageNames[langCode] || "English";
+        showToast("Using fallback translations", "info");
+      }
+    }
+
+    function getFallbackTranslations(langCode) {
+      const fb = {
+        en: {
+          pageTitle: "MalScan - Network Security Scanner",
+          appName: "MalScan",
+          appSubtitle: "Advanced Network Security Scanner for IoT Ecosystems",
+          navScan: "Network Scan",
+          navResults: "Scan Results",
+          navDemo: "Demo Mode",
+          navAbout: "About",
+          scanTitle: "Network Security Scan",
+          scanDescription: "Perform a comprehensive security assessment of your IoT network. Discover devices, analyze traffic patterns, and identify potential vulnerabilities.",
+          scanConfig: "Scan Configuration",
+          scanQuick: "Quick Scan (Recommended)",
+          scanDeep: "Deep Security Analysis",
+          scanCustom: "Custom Range",
+          btnStartScan: "Start Security Scan",
+          btnNetworkInfo: "Network Information",
+          realTimeMonitoring: "Real-time Monitoring",
+          monitoringDescription: "Live packet capture and analysis with machine learning threat detection",
+          scanProgress: "Scan Progress",
+          devicesFound: "Devices",
+          packetsAnalyzed: "Packets",
+          threatsDetected: "Threats",
+          resultsTitle: "Scan Results",
+          btnPDF: "PDF Report",
+          btnRefresh: "Refresh",
+          statTotalDevices: "Total Devices",
+          statAtRisk: "At Risk",
+          statCritical: "Critical",
+          statSecure: "Secure",
+          demoTitle: "Demo Mode",
+          demoDescription: "Experience the scanner with simulated data. Perfect for testing and demonstration purposes without accessing real network data.",
+          btnDemoScan: "Run Demo Scan",
+          demoFeatures: "Demo Features",
+          demoFeature1: "Simulated IoT devices",
+          demoFeature2: "Realistic risk assessments",
+          demoFeature3: "Sample network traffic",
+          demoFeature4: "Exportable reports",
+          footerTagline: "Advanced IoT Security Platform",
+          statusReady: "Ready",
+          statusConnected: "Connected",
+          statusOffline: "Offline",
+          noDevices: "No Devices Found",
+          noDevicesHint: "Try adjusting your scan settings or check network connectivity.",
+          errorTitle: "Scan Failed",
+          btnRetry: "Retry Scan",
+          errorFetchFailed: "Failed to fetch scan results",
+          errorDemoFailed: "Failed to load demo data",
+        },
+        ur: {
+          appName: "MalScan",
+          navAbout: "تعارف",
+          navScan: "نیٹ ورک اسکین",
+          navResults: "اسکین نتائج",
+          navDemo: "ڈیمو موڈ",
+        },
+        ps: {
+          appName: "MalScan",
+          navAbout: "پېژندنه",
+        }
+      };
+      return fb[langCode] || fb.en;
+    }
+
+    function translatePage() {
+      document.querySelectorAll("[data-key]").forEach((el) => {
+        const key = el.getAttribute("data-key");
+        if (translations[key]) {
+          if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") el.placeholder = translations[key];
+          else if (el.tagName === "OPTION") el.textContent = translations[key];
+          else el.textContent = translations[key];
+        }
+      });
+      updateDynamicTranslations();
+    }
+
+    function updateDynamicTranslations() {
+      const ns = document.getElementById("networkStatus");
+      if (ns && translations["statusConnected"]) ns.textContent = translations["statusConnected"];
+    }
+
+    function updateTextDirection(langCode) {
+      const html = document.documentElement;
+      const body = document.body;
+      if (rtlLanguages.includes(langCode)) {
+        html.setAttribute("dir", "rtl");
+        html.setAttribute("lang", langCode);
+        body.classList.add("rtl");
+      } else {
+        html.setAttribute("dir", "ltr");
+        html.setAttribute("lang", langCode);
+        body.classList.remove("rtl");
+      }
+    }
+
+    function showToast(message, type = "info") {
+      const toastId = "toast-" + Date.now();
+      const icon = { success: "check-circle", error: "exclamation-triangle", info: "info-circle", warning: "exclamation-circle" }[type];
+      const color = { success: "#3db87a", error: "#e5484d", info: "#5b6cff", warning: "#e6a817" }[type];
+      const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-white border-0" role="alert" 
+             style="background: linear-gradient(180deg, ${color}, ${color}dd);">
+          <div class="d-flex">
+            <div class="toast-body"><i class="fas fa-${icon} me-2"></i>${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+          </div>
+        </div>`;
+      let container = document.getElementById("toastContainer");
+      if (!container) {
+        container = document.createElement("div");
+        container.id = "toastContainer";
+        container.className = "toast-container position-fixed bottom-0 end-0 p-3";
+        container.style.zIndex = "1055";
+        document.body.appendChild(container);
+      }
+      container.insertAdjacentHTML("beforeend", toastHTML);
+      const el = document.getElementById(toastId);
+      const toast = new bootstrap.Toast(el, { autohide: true, delay: 3000 });
+      toast.show();
+      el.addEventListener("hidden.bs.toast", function () { this.remove(); });
+    }
+
+    // ========== ABOUT MODAL ==========
+    function openAboutModal() {
+      const modal = new bootstrap.Modal(document.getElementById("aboutModal"));
+      modal.show();
+    }
+
+    // ========== API & SCAN FUNCTIONS ==========
+    const API_ENDPOINTS = {
+      SCAN: "/scan_predict",
+      DEMO: "/demo_scan",
+      NETWORK_INFO: "/network_info",
+      STATS: "/network_stats",
+    };
+
+    async function updateNetworkStatus() {
+      try {
+        const response = await fetch(API_ENDPOINTS.NETWORK_INFO);
+        const data = await response.json();
+        document.getElementById("networkStatus").textContent = translations["statusConnected"] || "Connected";
+      } catch (error) {
+        document.getElementById("networkStatus").textContent = translations["statusOffline"] || "Offline";
+        document.getElementById("networkStatus").className = "badge bg-danger";
+      }
+    }
+
+    async function startRealScan() {
+      const progressBar = document.getElementById("scanProgress");
+      const progressText = document.getElementById("progressText");
+      const scanDetails = document.getElementById("scanDetails");
+      scanDetails.style.display = "block";
+      const duration = 20000;
+      const startTime = Date.now();
+      const interval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        let progress = (elapsed / duration) * 100;
+        if (progress >= 100) { progress = 100; clearInterval(interval); fetchRealResults(); }
+        progressBar.style.width = progress + "%";
+        progressText.textContent = Math.round(progress) + "%";
+      }, 200);
+      setTimeout(() => {
+        const resultsTab = new bootstrap.Tab(document.getElementById("results-tab"));
+        resultsTab.show();
+      }, 20000);
+    }
+
+    async function fetchRealResults() {
+      try {
+        showLoadingState();
+        const response = await fetch(API_ENDPOINTS.SCAN);
+        const data = await response.json();
+        currentScanData = data;
+        displayResults(data);
+        updateStats(data);
+      } catch (error) { showError("errorFetchFailed"); }
+    }
+
+    async function startDemoScan() {
+      try {
+        showLoadingState();
+        const response = await fetch(API_ENDPOINTS.DEMO);
+        const data = await response.json();
+        currentScanData = data;
+        displayResults(data);
+        updateStats(data);
+        const resultsTab = new bootstrap.Tab(document.getElementById("results-tab"));
+        resultsTab.show();
+      } catch (error) { showError("errorDemoFailed"); }
+    }
+
+    function displayResults(data) {
+      const grid = document.getElementById("devicesGrid");
+      grid.innerHTML = "";
+      if (!data.predictions || data.predictions.length === 0) {
+        grid.innerHTML = `<div class="col-12 text-center py-5">
+          <i class="fas fa-search fa-2x text-gray mb-3"></i>
+          <h5 class="text-white">${translations["noDevices"] || "No Devices Found"}</h5>
+          <p class="text-gray">${translations["noDevicesHint"] || "Try adjusting your scan settings or check network connectivity."}</p>
+        </div>`;
+        return;
+      }
+      data.predictions.forEach((device) => {
+        const riskLevel = getRiskLevel(device.overall_risk || device.risk);
+        const riskClass = `risk-${riskLevel.toLowerCase().replace(" ", "-")}`;
+        const riskText = translations[`risk${riskLevel}`] || riskLevel;
+        const deviceName = device.name || device.hostname || `Device ${device.ip}`;
+        const deviceType = device.type || "Unknown";
+        const deviceIp = device.ip || "N/A";
+        const deviceMac = device.mac || "N/A";
+        const card = document.createElement("div");
+        card.className = "col-md-6 col-lg-4 mb-3";
+        card.innerHTML = `
+          <div class="simple-card device-card p-3 h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="device-name"><i class="fas fa-${getDeviceIcon(device.type)} me-2 text-primary"></i>${deviceName}</h6>
+                <div class="device-ip">${deviceIp}</div>
+                ${deviceMac !== "Unknown" && deviceMac !== "N/A" ? `<div class="device-mac">${deviceMac}</div>` : ""}
+              </div>
+              <span class="risk-badge ${riskClass}">${riskText}</span>
+            </div>
+            <div class="mt-1"><small class="text-gray">${deviceType}</small></div>
+            ${device.predictions && device.predictions.length > 0 ? `
+              <div class="mt-3">
+                <h6 class="small">Network Flows:</h6>
+                ${device.predictions.slice(0,3).map(flow => `
+                  <div class="flow-item">
+                    <div class="d-flex justify-content-between">
+                      <small><strong>${flow.flow || `${flow.src}:${flow.sport}→${flow.dst}:${flow.dport}`}</strong></small>
+                      <span class="protocol-badge">${flow.protocol || "TCP/UDP"}</span>
+                    </div>
+                    <small class="text-gray">Risk: ${flow.risk || "N/A"}</small>
+                  </div>
+                `).join("")}
+                ${device.predictions.length > 3 ? `<small class="text-gray">+${device.predictions.length - 3} more flows</small>` : ""}
+              </div>
+            ` : ""}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updateStats(data) {
+      if (!data.predictions) return;
+      const devices = data.predictions;
+      const total = devices.length;
+      const critical = devices.filter(d => (d.overall_risk || d.risk) >= 4).length;
+      const atRisk = devices.filter(d => (d.overall_risk || d.risk) >= 3).length;
+      const safe = devices.filter(d => (d.overall_risk || d.risk) <= 2).length;
+      document.getElementById("totalDevices").textContent = total;
+      document.getElementById("criticalDevices").textContent = critical;
+      document.getElementById("riskDevices").textContent = atRisk;
+      document.getElementById("safeDevices").textContent = safe;
+    }
+
+    function getRiskLevel(riskScore) {
+      if (riskScore >= 4) return "Critical";
+      if (riskScore >= 3) return "High";
+      if (riskScore >= 2) return "Medium";
+      if (riskScore >= 1) return "Low";
+      return "Safe";
+    }
+
+    function getDeviceIcon(deviceType) {
+      if (!deviceType) return "microchip";
+      if (deviceType.includes("Camera")) return "video";
+      if (deviceType.includes("Phone") || deviceType.includes("Mobile")) return "mobile-phone";
+      if (deviceType.includes("TV")) return "tv";
+      if (deviceType.includes("Computer") || deviceType.includes("PC")) return "desktop";
+      if (deviceType.includes("Printer")) return "print";
+      return "microchip";
+    }
+
+    function showLoadingState() {
+      const grid = document.getElementById("devicesGrid");
+      grid.innerHTML = `<div class="col-12 text-center py-5"><div class="spinner-border text-primary mb-3"></div><h6 class="text-white">Analyzing Network Data...</h6></div>`;
+    }
+
+    function showError(messageKey) {
+      const grid = document.getElementById("devicesGrid");
+      const msg = translations[messageKey] || messageKey;
+      grid.innerHTML = `<div class="col-12 text-center py-5">
+        <i class="fas fa-exclamation-triangle fa-2x text-danger mb-3"></i>
+        <h6 class="text-danger">${translations["errorTitle"] || "Scan Failed"}</h6>
+        <p class="text-gray">${msg}</p>
+        <button class="btn btn-primary mt-2" onclick="startRealScan()">${translations["btnRetry"] || "Retry Scan"}</button>
+      </div>`;
+    }
+
+    function refreshResults() {
+      if (currentScanData) displayResults(currentScanData);
+      else startRealScan();
+    }
+
+    async function getNetworkInfo() {
+      try {
+        const response = await fetch(API_ENDPOINTS.NETWORK_INFO);
+        const data = await response.json();
+        showNetworkInfoModal(data);
+      } catch (error) {
+        showToast("Unable to fetch network information", "error");
+      }
+    }
+
+    function showNetworkInfoModal(data) {
+      const existing = document.getElementById("networkInfoModal");
+      if (existing) existing.remove();
+      const modalHTML = `
+        <div class="modal fade" id="networkInfoModal" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content simple-card border-0">
+              <div class="modal-header border-bottom border-gray">
+                <h5 class="modal-title"><i class="fas fa-network-wired text-primary me-2"></i>Network Information</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                ${data.local_ip ? `<div class="mb-3"><small class="text-gray">Local IP Address</small><div class="text-white">${data.local_ip}</div></div>` : ""}
+                ${data.hostname ? `<div class="mb-3"><small class="text-gray">Computer Name</small><div class="text-white">${data.hostname}</div></div>` : ""}
+                ${data.target_network ? `<div class="mb-3"><small class="text-gray">Network Range</small><div class="text-white">${data.target_network}</div></div>` : ""}
+                ${data.wifi_name ? `<div class="mb-3"><small class="text-gray">WiFi Network</small><div class="text-white">${data.wifi_name}</div></div>` : ""}
+                ${data.gateway ? `<div class="mb-3"><small class="text-gray">Gateway/Router</small><div class="text-white">${data.gateway}</div></div>` : ""}
+                <div class="mb-3"><small class="text-gray">Security Status</small><div><span class="badge ${data.model_loaded ? "bg-success" : "bg-warning"}">${data.model_loaded ? "ML Model Active" : "Basic Analysis"}</span></div></div>
+              </div>
+              <div class="modal-footer border-top border-gray">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" onclick="copyNetworkInfo()"><i class="fas fa-copy me-1"></i>Copy Info</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      document.body.insertAdjacentHTML("beforeend", modalHTML);
+      const modal = new bootstrap.Modal(document.getElementById("networkInfoModal"));
+      modal.show();
+    }
+
+    function copyNetworkInfo() {
+      navigator.clipboard.writeText(JSON.stringify(currentScanData, null, 2));
+      showToast("Network information copied to clipboard", "success");
+    }
+
+    function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      pdf.setFontSize(16);
+      pdf.text("IoT Security Scan Report", 20, 20);
+      pdf.setFontSize(10);
+      pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, 30);
+      if (currentScanData) {
+        let y = 45;
+        currentScanData.predictions.forEach((device) => {
+          const name = device.name || device.hostname || device.ip || "Unknown";
+          pdf.text(`${name} (${device.ip})`, 20, y);
+          pdf.text(`Risk Level: ${getRiskLevel(device.overall_risk || device.risk)}`, 20, y + 5);
+          y += 15;
+          if (y > 270) { pdf.addPage(); y = 20; }
+        });
+      }
+      pdf.save("iot_security_report.pdf");
+    }
+  </script>
+</body>
+</html>
